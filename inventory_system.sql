@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Oct 17, 2024 at 02:29 PM
+-- Host: 127.0.0.1:3306
+-- Generation Time: Oct 27, 2024 at 06:34 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -218,7 +218,7 @@ CREATE TABLE `orders` (
   `address_id` int(11) NOT NULL,
   `total_product` int(11) NOT NULL,
   `total_amount` decimal(10,2) NOT NULL,
-  `status` enum('Canceled','Placed','Pending','Delivered') NOT NULL,
+  `status` enum('Canceled','Placed','Pending','Delivered','Shipped') NOT NULL,
   `placed_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -228,8 +228,8 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `client_id`, `address_id`, `total_product`, `total_amount`, `status`, `placed_at`, `updated_at`) VALUES
-(24, 3, 6, 1, 55.00, 'Canceled', '2024-10-16 11:03:22', '2024-10-16 11:38:40'),
-(25, 3, 5, 2, 109.00, 'Canceled', '2024-10-17 05:27:21', '2024-10-17 05:30:47');
+(24, 3, 6, 1, 55.00, 'Canceled', '2024-10-16 11:03:22', '2024-10-27 05:25:37'),
+(25, 3, 5, 2, 109.00, 'Canceled', '2024-10-17 05:27:21', '2024-10-27 03:50:52');
 
 -- --------------------------------------------------------
 
@@ -243,17 +243,18 @@ CREATE TABLE `order_details` (
   `product_id` int(11) NOT NULL,
   `unit_price` decimal(10,2) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `total_amount` decimal(10,2) NOT NULL
+  `total_amount` decimal(10,2) NOT NULL,
+  `order_status` enum('Canceled','Placed','Pending','Delivered','Shipped') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `order_details`
 --
 
-INSERT INTO `order_details` (`order_detail_id`, `order_id`, `product_id`, `unit_price`, `quantity`, `total_amount`) VALUES
-(32, 24, 1, 30.00, 1, 30.00),
-(33, 25, 1, 30.00, 1, 30.00),
-(34, 25, 25, 54.00, 1, 54.00);
+INSERT INTO `order_details` (`order_detail_id`, `order_id`, `product_id`, `unit_price`, `quantity`, `total_amount`, `order_status`) VALUES
+(32, 24, 1, 30.00, 1, 30.00, 'Canceled'),
+(33, 25, 1, 30.00, 1, 30.00, 'Canceled'),
+(34, 25, 25, 54.00, 1, 54.00, 'Pending');
 
 -- --------------------------------------------------------
 

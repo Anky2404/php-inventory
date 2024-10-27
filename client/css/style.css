@@ -190,7 +190,7 @@ img {
     margin-bottom: 35px;
 }
 
-.contact-wrap .contact-info h3 {}
+
 
 .contact-wrap .contact-info ul {
     padding: 0;
@@ -392,9 +392,7 @@ header .colleft {
     width: auto;
 }
 
-header .colright {
-    /*! width: 70%; */
-}
+
 
 header .colright ul {
     padding: 0;
@@ -405,7 +403,7 @@ header .colright ul {
     align-items: center;
 }
 
-header .colright ul li {}
+
 
 header .colright ul li a {
     text-decoration: none;
@@ -438,7 +436,7 @@ header .colright ul li a:hover {
     align-items: center;
 }
 
-.top-bar .colleft {}
+
 
 .top-bar .colleft p {
     margin-bottom: 0;
@@ -1552,3 +1550,87 @@ label::after {
     margin-bottom: 5px;
     border: 0;
 }
+
+.order-detail {
+    padding: 20px 20px 10px 20px;
+    background: #faf8ec;
+    margin-left: 30px;
+    border-radius: 6px;
+    margin-right: 40px;
+}
+
+.order-detail ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.order-detail ul li {
+    display: flex;
+    margin-bottom: 20px;
+    width: 50%;
+    gap: 30px;
+    align-items: center;
+}
+
+.order-name {
+    width: 80%;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.order-detail ul li h4 {
+    font-size: 18px;
+    color: #12372a;
+    font-weight: 500;
+}
+
+.order-detail ul li h5 {
+    font-size: 18px;
+    color: #000;
+    font-weight: 400;
+}
+
+.order-detail img {
+    max-width: 160px;
+    margin-bottom: 20px;
+}
+
+.order-img {
+    width: 20%;
+}
+
+.order-status {
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+}
+
+.order-status-options {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    z-index: 10;
+    width: 100px; 
+}
+
+.status-option {
+    padding: 5px 10px;
+    cursor: pointer;
+    color: white;
+    font-weight: bolder;
+}
+
+.status-option:hover {
+    background-color: #f0f0f0; 
+}
+
+a.cancel-order.disabled {
+    color: grey;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+

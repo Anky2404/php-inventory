@@ -633,3 +633,9 @@ button:hover {
 .status-option:hover {
     background-color: #f0f0f0; 
 }
+
+a.cancel-order.disabled {
+    color: grey;
+    cursor: not-allowed;
+    pointer-events: none;
+}

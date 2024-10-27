@@ -1,0 +1,6 @@
+RewriteEngine On
+
+    # If the requested URL is not a file or directory, serve index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ $1.php 

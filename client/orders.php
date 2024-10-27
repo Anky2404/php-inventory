@@ -14,28 +14,40 @@ if (empty($orders)) {
     exit();
 }
 
-if(isset($_POST['order_id'])){
-    $orderId=$_POST['order_id'];
-    $status='Canceled';
-    $query=$connect->prepare('UPDATE `orders` SET `status`= ? WHERE `id`= ?');
-    $query->bind_param('si',$status,$orderId);
+// Update order status
+if (isset($_POST['order_id']) && isset($_POST['new_status'])) {
+    $order_id = $_POST['order_id'];
+    $new_status = $_POST['new_status'];
+    $query = $connect->prepare('UPDATE `orders` SET `status` = ? WHERE `id` = ?');
+    $query->bind_param('si', $new_status, $order_id);
     if ($query->execute()) {
-        echo json_encode(['success' => true]);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Cancellation failed.']);
+        //update order details status
+        $query1 = $connect->prepare('UPDATE `order_details` SET `order_status`= ? WHERE `order_id`= ?');
+        $query1->bind_param('si', $new_status, $order_id);
+        if ($query1->execute()) {
+            if ($new_status === 'Canceled') {
+                $_SESSION['errors']['general'] = 'Order ' . $new_status . ' successfully.';
+            } else {
+                $_SESSION['success_message'] = 'Order ' . $new_status . ' successfully.';
+            }
+            echo json_encode(['success' => true, 'message' => 'Order updated successfully']);
+            exit;
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to update order']);
+            exit;
+        }
     }
-
 }
 
 ?>
 <!doctype html>
 <html lang="en">
 
-<?php include_once 'layout/head.php'?>
+<?php include_once 'layout/head.php' ?>
 
 <body>
 
-    <?php include_once 'layout/header.php'?>
+    <?php include_once 'layout/header.php' ?>
 
     <section class="inv-banner">
         <div class="container-wrap">
@@ -50,7 +62,7 @@ if(isset($_POST['order_id'])){
     <section class="order-table">
         <div class="container-wrap">
             <div class="row-wrap">
-                <?php foreach ($orders as $order) {?>
+                <?php foreach ($orders as $order) { ?>
                 <div class="col-6">
 
                     <table>
@@ -71,10 +83,24 @@ if(isset($_POST['order_id'])){
                                 <td><?= date("d M Y", strtotime($order['placed_at'])) ?></td>
                                 <td><?= $order['total_product'] ?></td>
                                 <td>$ <?= $order['total_amount'] ?></td>
-                                <td><?= $order['status'] ?></td>
+                                <td>
+                                    <?php $orderStatus = $order['status']; ?>
+                                    <span class="order-status"
+                                        style="background-color: <?= getStatusColor($orderStatus) ?>;">
+                                        <?= $orderStatus ?>
+                                    </span>
+                                </td>
                                 <td class="table-btn">
-                                    <a href="#" class="cancel-order" data-order-id="<?= $order['id'] ?>">Cancel</a>
-                                <a href="order-details.php?oId=<?=urlencode(base64_encode($order['id']))?>">View</a>
+                                    <a href="#"
+                                        class="cancel-order order-status <?= ($orderStatus !== 'Placed') ? 'disabled' : '' ?>"
+                                        data-order-id="<?= $order['id'] ?>"
+                                        <?= ($orderStatus !== 'Placed') ? 'style="pointer-events: none; color: grey; cursor: not-allowed;"' : '' ?>>
+                                        Cancel
+                                    </a>
+                                    <a href="order-details.php?oId=<?= urlencode(base64_encode($order['id'])) ?>"
+                                        class="order-status" style="background-color:cornflowerblue">
+                                        View
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>
@@ -82,7 +108,7 @@ if(isset($_POST['order_id'])){
                     </table>
 
                 </div>
-                <?php }?>
+                <?php } ?>
 
             </div>
         </div>
@@ -94,7 +120,7 @@ if(isset($_POST['order_id'])){
             // Handle address selection
             $('input[name="selected_address"]').change(function() {
                 // Hide the warning message
-                $('#address-warning').hide(); 
+                $('#address-warning').hide();
             });
             // Handle form submission
             $('#order-form').submit(function(e) {
@@ -103,40 +129,47 @@ if(isset($_POST['order_id'])){
                     // Set the value of the hidden input to the selected address
                     $('#selected_address').val(selectedAddress.val());
                 } else {
-                    // Prevent form submission and show warning message
+                    // Prevent form submission 
                     e.preventDefault();
                     $('#address-warning').show();
                 }
             });
         });
-
-        //handle cancel order click
+        // Handle cancel order click
         $('.cancel-order').on('click', function(e) {
-        e.preventDefault(); 
-        // Get the order id
-        var orderId = $(this).data('order-id'); 
-        // Show confirmation message
-        var confirmation = confirm("Are you sure you want to cancel this order?");
-        if (confirmation) {
-            $.ajax({
-                url: 'orders.php',
-                type: 'POST',
-                data: { order_id: orderId},
-                success: function(response) {
-                    // Handle success response
-                    alert('Order cancelled successfully.');
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    // Handle error response
-                    alert('An error occurred while cancelling the order. Please try again.');
-                }
-            });
-        }
-    });
+            // Prevent action if button is disabled
+            if ($(this).hasClass('disabled')) {
+                e.preventDefault();
+                return;
+            }
+            e.preventDefault();
+            // Get the order id
+            var orderId = $(this).data('order-id');
+            // Show confirmation message
+            var confirmation = confirm("Are you sure you want to cancel this order?");
+            if (confirmation) {
+                $.ajax({
+                    url: 'orders.php',
+                    type: 'POST',
+                    data: {
+                        order_id: orderId,
+                        new_status: 'Canceled'
+                    },
+                    success: function(response) {
+                        // Handle success response
+                        alert('Order cancelled successfully.');
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error response
+                        alert('An error occurred while cancelling the order. Please try again.');
+                    }
+                });
+            }
+        });
     </script>
 
-    <?php include_once 'layout/footer.php'?>
+    <?php include_once 'layout/footer.php' ?>
 </body>
 
 </html>

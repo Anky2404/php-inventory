@@ -24,24 +24,6 @@ if ($result->num_rows > 0) {
     }
 }
 
-//get status colort
-function getStatusColor($status)
-{
-    switch ($status) {
-        case 'Placed':
-            return 'blue';
-        case 'Shipped':
-            return 'purple';
-        case 'Delivered':
-            return 'green';
-        case 'Canceled':
-            return 'red';
-        default:
-            return 'grey';
-    }
-}
-
-
 // Update order details status
 if (isset($_POST['order_detail_id']) && isset($_POST['new_status']) && isset($_POST['order_id'])) {
     $order_detail_id = $_POST['order_detail_id'];

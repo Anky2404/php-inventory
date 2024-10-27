@@ -20,22 +20,7 @@ while($rows = mysqli_fetch_array($result)){
     $product[] = $rows;
 }
 
-//get status colort
-function getStatusColor($status)
-{
-    switch ($status) {
-        case 'Placed':
-            return 'blue';
-        case 'Shipped':
-            return 'purple';
-        case 'Delivered':
-            return 'green';
-        case 'Canceled':
-            return 'red';
-        default:
-            return 'grey';
-    }
-}
+
 
 // Update order status
 if (isset($_POST['order_id']) && isset($_POST['new_status'])) {

@@ -350,4 +350,20 @@ function get_all_orders($status=null){
     return  $orders;
 }
 
+// Function to get status color
+function getStatusColor($status) {
+    switch ($status) {
+        case 'Placed':
+            return 'blue';
+        case 'Shipped':
+            return 'purple';
+        case 'Delivered':
+            return 'green';
+        case 'Canceled':
+            return 'red';
+        default:
+            return 'grey';
+    }
+}
+
 
